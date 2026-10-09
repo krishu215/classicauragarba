@@ -7,32 +7,15 @@ import {
   migrationState,
 } from "../../db/schema";
 import { legacyDb, type BookingRow } from "./db.server";
-import { optionalEnv } from "./env.server";
-
-let importChecked = false;
 
 export async function bookingDatabase() {
   const store = database();
-  if (importChecked) return store;
-  // The one-time import of old Supabase orders only runs when the service role key is configured.
-  // It never blocks new orders: on failure it is logged and retried on a later request.
-  if (!optionalEnv("SUPABASE_URL") || !optionalEnv("SUPABASE_SERVICE_ROLE_KEY")) return store;
-  try {
-    await importLegacyBookings(store);
-    importChecked = true;
-  } catch (error) {
-    console.error("[import] Existing Supabase orders could not be imported yet.", error);
-  }
-  return store;
-}
-
-async function importLegacyBookings(store: ReturnType<typeof database>) {
   const key = "supabase_bookings_v1";
   const [completed] = await store
     .select()
     .from(migrationState)
     .where(eq(migrationState.key, key));
-  if (completed) return;
+  if (completed) return store;
   await store.transaction(async (transaction) => {
     await transaction.execute(sql`select pg_advisory_xact_lock(2456, 2942)`);
     const [alreadyImported] = await transaction
@@ -117,6 +100,16 @@ async function importLegacyBookings(store: ReturnType<typeof database>) {
     }
     await transaction.insert(migrationState).values({ key });
   });
+  return store;
+}
+
+export async function isLegacyAccount(id: string) {
+  const store = await bookingDatabase();
+  const [account] = await store
+    .select({ id: legacyAccounts.id })
+    .from(legacyAccounts)
+    .where(eq(legacyAccounts.id, id));
+  return Boolean(account);
 }
 
 export async function listBookings(

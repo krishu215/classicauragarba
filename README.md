@@ -25,20 +25,41 @@ deploy-time migrations are in `netlify/database/migrations`.
 - `/admin` is a private dashboard (Supabase Auth, only emails in `ADMIN_EMAILS`): see every booking, change its
   status, add notes, export CSV.
 
-Orders are stored in Netlify Database (connected automatically, no connection string needed).
+Setup: configure the server environment variables in Netlify, including `SUPABASE_DB_URL` (or `DATABASE_URL`),
+add the webhook in Razorpay
+(URL `https://<your-site>/api/razorpay-webhook`, events `payment_link.paid` and `payment_link.expired`), verify your
+sending domain in Resend, and retain the existing admin user in Supabase.
 
-### Login, signup and admin (Supabase Auth)
+### Existing data and account compatibility
 
-Customer and admin accounts use Supabase Auth. Set these Netlify environment variables (Project configuration →
-Environment variables) and redeploy:
+The first order read or write imports the existing Supabase bookings and their items into Netlify Database.
+The import is paginated, transaction-protected and guarded by a database lock and completion marker. It preserves
+references, IDs, statuses, payment details, delivery slots, notes and timestamps. It never changes or deletes the
+source data, and it never sends historical order emails. A failed import rolls back and is retried on the next request.
+Keep `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` and `SUPABASE_ANON_KEY` configured. Pause order processing during
+the production cutover so an old deployment cannot save additional orders after the import snapshot.
 
-- `SUPABASE_URL` and `SUPABASE_ANON_KEY` (Supabase → Project Settings → API) — required for login and signup.
-- `SUPABASE_SERVICE_ROLE_KEY` — optional; only used to import old orders from the previous Supabase `bookings` table once.
-- `ADMIN_EMAILS` — optional comma-separated list; defaults to the owner's admin email.
+New customer accounts use Netlify Identity. The import snapshots existing account IDs and emails, without passwords
+or session data, so the compatibility login cannot be used to register new Supabase accounts after the cutover.
+Existing verified Supabase customer accounts can still sign in with
+their existing passwords and see all their orders; existing reset links and password recovery remain supported.
+Passwords are not exported, copied or stored by this migration. Admin authentication and `ADMIN_EMAILS` continue
+using the existing account setup so the team does not lose dashboard access.
 
-In Supabase → Authentication → URL Configuration, set the Site URL to `https://classicauragarba.netlify.app` and add
-`https://classicauragarba.netlify.app/login` to the redirect URLs, so verification and reset links come back to the site.
-The admin creates their account once with "Create account" on `/login`, verifies the email, then signs in at `/admin`.
+### Verified signup and branded account emails
+
+Netlify Identity is enabled through `.netlify/features/netlify-identity`. In the site's Identity settings:
+
+- Enable email/password signup and leave **autoconfirm off**. Signup fails closed if confirmation is disabled.
+- Set the confirmation email template path to `/emails/confirmation.html`, with subject `Confirm your email · Classic Aura`.
+- Set the password recovery email template path to `/emails/recovery.html`, with subject `Reset your password · Classic Aura`.
+- Configure the correct HTTPS site URL and allow `/login` as the email callback destination.
+
+The template files are publicly hosted template sources, not preview pages. Identity expands their Go template
+placeholders when sending mail. Confirmation links are verified by Identity, then the customer returns to the login
+screen. Customer order endpoints independently validate the Identity session and confirmed email with the Identity
+API; browser state or unverified JWT claims cannot unlock order history. Signup and login event handlers add
+server-side confirmation checks. To resend verification, enter the account's email and password on the sign-in form.
 
 ### Order confirmation and delivery emails
 
