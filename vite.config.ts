@@ -31,6 +31,13 @@ const securityHeaders = {
   "Cross-Origin-Opener-Policy": "same-origin",
 };
 
+function nitroPreset() {
+  if (process.env.NITRO_PRESET) return process.env.NITRO_PRESET;
+  if (process.env.VERCEL) return "vercel";
+  if (process.env.NETLIFY) return "netlify";
+  return "netlify";
+}
+
 export default defineConfig(({ command, isPreview }) => ({
   server: { host: "0.0.0.0", port: 8080 },
   resolve: { tsconfigPaths: true },
@@ -38,7 +45,7 @@ export default defineConfig(({ command, isPreview }) => ({
     tailwindcss(),
     tanstackStart(),
     ...(command === "build" || isPreview
-      ? [nitro({ preset: "netlify", routeRules: { "/**": { headers: securityHeaders } } })]
+      ? [nitro({ preset: nitroPreset(), routeRules: { "/**": { headers: securityHeaders } } })]
       : []),
     viteReact(),
   ],
