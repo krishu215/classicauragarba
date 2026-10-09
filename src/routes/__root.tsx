@@ -1,5 +1,6 @@
 import { createRootRoute, HeadContent, Outlet, Scripts } from "@tanstack/react-router";
 import { useEffect } from "react";
+import { Analytics } from "@vercel/analytics/react";
 import appCss from "../styles.css?url";
 import { applyTheme, readMode } from "@/lib/theme";
 
@@ -47,6 +48,7 @@ export const Route = createRootRoute({
       <body>
         <ThemeSync />
         <Outlet />
+        <Analytics />
         <Scripts />
       </body>
     </html>

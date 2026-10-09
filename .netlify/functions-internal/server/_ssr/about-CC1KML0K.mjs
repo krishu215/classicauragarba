@@ -1,0 +1,90 @@
+import { a as PHONE_DISPLAY, n as DRESSES, o as PHONE_TEL } from "./mail.server-BoiOOyIE.mjs";
+import { S as require_jsx_runtime, b as Link } from "../_libs/@tanstack/react-router+[...].mjs";
+import { n as Shell, r as imgSize, t as PageIntro } from "./shell-dQL2qB9H.mjs";
+import { t as Prose } from "./prose-CI_UvwSp.mjs";
+//#region node_modules/.nitro/vite/services/ssr/assets/about-CC1KML0K.js
+var import_jsx_runtime = require_jsx_runtime();
+function AboutPage() {
+	const low = Math.min(...DRESSES.map((dress) => dress.price));
+	const high = Math.max(...DRESSES.map((dress) => dress.price));
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Shell, { children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("main", {
+		className: "mx-auto max-w-6xl px-5 py-12",
+		children: [
+			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+				className: "grid items-start gap-10 md:grid-cols-2",
+				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("img", {
+					src: "/dresses/noir-arch.jpg",
+					...imgSize("/dresses/noir-arch.jpg"),
+					alt: "Black and red arch-hem lehenga in front of a carved door",
+					className: "portrait w-full",
+					fetchPriority: "high"
+				}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)(PageIntro, {
+						kicker: "Indore",
+						title: "Made for the circle",
+						lede: "Classic Aura rents Garba dresses that are cut to move. We are not a catalogue of glued mirrors. The work is stitched, the flare is light, and the outfit comes back to us after your night."
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
+						className: "text-mute",
+						children: [
+							"Navratri 2026, we are booking 8–22 October, with free delivery and pickup inside Indore and a home trial of up to three outfits. One number for all of it:",
+							" ",
+							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("a", {
+								className: "text-gold underline",
+								href: `tel:${PHONE_TEL}`,
+								children: PHONE_DISPLAY
+							}),
+							"."
+						]
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						className: "mt-8 flex flex-wrap gap-3",
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Link, {
+							to: "/shop",
+							className: "btn btn-solid",
+							children: "Shop dresses"
+						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Link, {
+							to: "/contact",
+							className: "btn btn-line",
+							children: "Contact"
+						})]
+					})
+				] })]
+			}),
+			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Prose, {
+				title: "Why we rent Garba dresses",
+				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { children: "A Garba outfit is worn for a handful of nights and then waits in a cupboard for the rest of the year. Renting lets you dance in a properly stitched chaniya choli at Navratri without paying for it to sit unused. Classic Aura keeps a small rail of handcrafted pieces and rents them out for one, two or three days at a time." }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { children: "Because the rail is small, every piece is chosen for how it moves. We look at the weight of the flare, the way the hem is finished and whether the mirror work will still be in place after hours of spinning in a circle." })]
+			}),
+			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Prose, {
+				title: "What goes into every set",
+				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { children: "Each rental is a full set: chaniya, choli and dupatta. The mirror work is stitched on, not glued, so it survives the dance floor. The flare is wide and light, which matters far more at eleven at night than it does in a photograph." }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { children: "Every outfit is steam pressed before it leaves us, and the blouse can be altered to your measurements when you book early enough. Ordinary creasing from dancing is expected and is never charged." })]
+			}),
+			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Prose, {
+				title: "Delivered across Indore",
+				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", { children: [
+					"We deliver and collect across Indore, pincodes beginning 452, at no extra charge. You can try up to three outfits at home first with our ",
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Link, {
+						to: "/trial",
+						className: "text-gold underline",
+						children: "free home trial"
+					}),
+					", then rent only what you love. Dates run from 8 to 22 October 2026, and we confirm every booking on WhatsApp, and you pay cash on delivery."
+				] }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", { children: [
+					"This season the rail has three families, Peacock Border, Mirror Work and Festive Lehengas, with daily rates from ₹",
+					low,
+					" to ₹",
+					high,
+					". Two-day rentals take 10% off the daily rate and three-day rentals take 20% off. See them all in the ",
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Link, {
+						to: "/collections",
+						className: "text-gold underline",
+						children: "collections"
+					}),
+					"."
+				] })]
+			})
+		]
+	}) });
+}
+//#endregion
+export { AboutPage as component };
