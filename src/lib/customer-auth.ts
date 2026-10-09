@@ -48,7 +48,10 @@ export async function customerSignUp({
     }
   } catch (error) {
     const message = error instanceof Error ? error.message : "";
-    if (/already.*registered|already.*exists/i.test(message)) return;
+    if (/already.*registered|already.*exists/i.test(message))
+      throw new Error(
+        "This email already has an account. Please sign in, or use Forgot your password.",
+      );
     if (/rate|too many|frequency/i.test(message))
       throw new Error(
         "Too many attempts. Please wait a few minutes and try again.",
@@ -125,7 +128,7 @@ export async function customerResend({
     );
   } catch {
     throw new Error(
-      "Could not resend verification. Please wait a minute and try again.",
+      "Could not resend verification. Enter your account email and password, then try again.",
     );
   }
 }
