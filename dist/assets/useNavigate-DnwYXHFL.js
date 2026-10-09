@@ -1,1 +1,0 @@
-import{C as e,b as t}from"./site-Bn20muqy.js";import{d as n}from"./theme-DmB3gOSX.js";var r=e(t(),1);function i(e){let t=n();return r.useCallback(n=>t.navigate({...n,from:n.from??e?.from}),[e?.from,t])}export{i as t};
