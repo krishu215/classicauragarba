@@ -4,16 +4,16 @@ import { OrderCard, type Order } from "@/components/orders-page";
 import { Shell } from "@/components/shell";
 import { PHONE_DISPLAY, PHONE_TEL, waLink } from "@/lib/site";
 import {
-  customerAcceptLink,
   customerForgot,
-  customerMe,
-  customerOrders,
   customerResend,
   customerSignIn,
   customerSignOut,
   customerSignUp,
   customerUpdatePassword,
-} from "@/server/customer";
+  handleAuthCallback,
+  hydrateCustomerSession,
+} from "@/lib/customer-auth";
+import { customerMe, customerOrders } from "@/server/customer";
 
 type Mode = "signin" | "signup" | "forgot" | "reset";
 type Me = { email: string; name: string };
@@ -46,18 +46,21 @@ export function AccountPage() {
           setMe(null);
           return;
         }
-        const linkType = hash.get("type");
-        if (hash.get("access_token") && hash.get("refresh_token") && (linkType === "signup" || linkType === "email" || linkType === "magiclink")) {
-          const signedIn = await customerAcceptLink({ data: { accessToken: hash.get("access_token") ?? "", refreshToken: hash.get("refresh_token") ?? "" } });
-          if (signedIn) {
-            setMe(signedIn);
-            return;
-          }
+        const callback = await handleAuthCallback();
+        if (callback?.type === "recovery") {
+          setMode("reset");
+          setMe(null);
+          return;
+        }
+        if (callback?.type === "confirmation") {
+          await customerSignOut();
+          setNotice("Your email is verified. You can now sign in.");
+        } else if (hash.get("type") === "signup" || hash.get("type") === "email") {
           setNotice("Your email is verified. Please sign in.");
         } else if (hash.get("error_code") || hash.get("error")) {
-          setError("That link is invalid or expired. Enter your email to resend verification, or request a new password reset.");
-          setNeedsVerify(true);
+          setError("That link is invalid or expired. Enter your email and password to resend verification, or request a new password reset.");
         }
+        await hydrateCustomerSession();
         setMe(await customerMe());
       } catch {
         setMe(null);
@@ -109,12 +112,7 @@ export function AccountPage() {
         setMe(await customerSignIn({ data: { email: form.email, password: form.password } }));
         setForm({ ...form, password: "" });
       } else if (mode === "signup") {
-        const { signedIn } = await customerSignUp({ data: form });
-        if (signedIn) {
-          setMe(signedIn);
-          setForm({ ...form, password: "" });
-          return;
-        }
+        await customerSignUp({ data: form });
         setMode("signin");
         setForm({ ...form, password: "" });
         setNeedsVerify(true);
@@ -143,7 +141,7 @@ export function AccountPage() {
     setError("");
     setNotice("");
     try {
-      await customerResend({ data: { email: form.email } });
+      await customerResend({ data: form });
       setForm({ ...form, password: "" });
       setNotice("Verification email sent again. Check your inbox and spam folder.");
     } catch (cause) {
