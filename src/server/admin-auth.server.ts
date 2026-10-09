@@ -1,9 +1,12 @@
-import { env } from "./env.server";
+import { optionalEnv } from "./env.server";
 import { ADMIN_COOKIES, resolveUser } from "./session.server";
+
+// Used when ADMIN_EMAILS (comma separated) is not set in the Netlify environment variables.
+const DEFAULT_ADMIN_EMAILS = "krishnanamdev382@gmail.com";
 
 export function isAllowedAdmin(email: string | null | undefined) {
   if (!email) return false;
-  const allowed = env("ADMIN_EMAILS")
+  const allowed = (optionalEnv("ADMIN_EMAILS") ?? DEFAULT_ADMIN_EMAILS)
     .split(",")
     .map((item) => item.trim().toLowerCase())
     .filter(Boolean);

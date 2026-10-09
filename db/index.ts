@@ -1,28 +1,14 @@
-import { drizzle } from "drizzle-orm/postgres-js";
-import postgres from "postgres";
+import { drizzle } from "drizzle-orm/netlify-db";
 import * as schema from "./schema";
 
-let sqlClient: ReturnType<typeof postgres> | null = null;
+let client: ReturnType<typeof createClient> | null = null;
 
-function databaseUrl(): string {
-  const url = process.env.SUPABASE_DB_URL ?? process.env.DATABASE_URL;
-  if (!url) {
-    throw new Error(
-      "Missing database connection string: set SUPABASE_DB_URL (or DATABASE_URL).",
-    );
-  }
-  return url;
+function createClient() {
+  // Connects to this site's Netlify Database automatically (NETLIFY_DB_URL), where the migrations are applied.
+  return drizzle({ schema });
 }
 
 export function database() {
-  if (!sqlClient) {
-    sqlClient = postgres(databaseUrl(), {
-      ssl: "require",
-      max: 1,
-      prepare: false,
-      connect_timeout: 10,
-      idle_timeout: 20,
-    });
-  }
-  return drizzle({ client: sqlClient, schema });
+  if (!client) client = createClient();
+  return client;
 }

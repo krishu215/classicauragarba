@@ -16,6 +16,9 @@ export const adminLogin = createServerFn({ method: "POST" })
       email: data.email.trim().toLowerCase(),
       password: data.password,
     });
+    if (error?.code === "email_not_confirmed") {
+      throw new Error("Please verify this email first using the link Supabase sent you, then sign in again.");
+    }
     if (error || !result.session || !isAllowedAdmin(result.user?.email)) {
       throw new Error("Wrong email or password.");
     }
