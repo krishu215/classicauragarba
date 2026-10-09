@@ -53,7 +53,8 @@ function DressPage() {
       </Shell>
     );
   }
-  return <DressDetail slug={dress.slug} />;
+  // Keyed by slug so moving to another dress (e.g. from "You may also love") starts with that dress's own date and length.
+  return <DressDetail key={dress.slug} slug={dress.slug} />;
 }
 
 function DressDetail({ slug }: { slug: string }) {

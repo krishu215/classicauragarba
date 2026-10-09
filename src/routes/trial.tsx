@@ -199,6 +199,7 @@ function TrialPage() {
                 id="trial-time"
                 className="field"
                 placeholder="Any time that suits the team"
+                maxLength={120}
                 value={customer.time}
                 onChange={(event) => setCustomer({ ...customer, time: event.target.value })}
               />

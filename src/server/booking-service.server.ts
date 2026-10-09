@@ -1,7 +1,7 @@
 import { randomInt } from "node:crypto";
 import { and, count, eq, gte, inArray, lte } from "drizzle-orm";
 import { bookingItems, bookings } from "../../db/schema";
-import { validateCustomer, type Customer } from "@/lib/customer";
+import { cleanPhone, validateCustomer, type Customer } from "@/lib/customer";
 import { dressBySlug } from "@/lib/dresses";
 import { dayStatus, ONLINE_PAYMENT, quote } from "@/lib/site";
 import { bookingDatabase } from "./booking-repository.server";
@@ -17,7 +17,8 @@ const REF_CHARS = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
 const makeRef = () => "CA" + Array.from({ length: 6 }, () => REF_CHARS[randomInt(REF_CHARS.length)]).join("");
 export const REF_PATTERN = /^CA[A-Z0-9]{6}$/;
 
-const HOLDING = ["paid", "confirmed", "delivered"] as const;
+// Cash-on-delivery requests are real orders, so they hold their dates as well.
+const HOLDING = ["requested", "paid", "confirmed", "delivered"] as const;
 
 function addDays(iso: string, days: number) {
   const [y, m, d] = iso.split("-").map(Number);
@@ -51,8 +52,8 @@ async function assertNotSpamming(mobile: string) {
 function customerFields(customer: Customer) {
   return {
     name: customer.name.trim(),
-    mobile: customer.mobile.trim(),
-    whatsapp: customer.whatsapp.trim() || null,
+    mobile: cleanPhone(customer.mobile),
+    whatsapp: cleanPhone(customer.whatsapp) || null,
     email: customer.email.trim().toLowerCase(),
     address: customer.address.trim(),
     area: customer.area.trim(),
