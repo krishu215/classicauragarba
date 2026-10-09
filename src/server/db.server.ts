@@ -1,5 +1,5 @@
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
-import { env } from "./env.server";
+import { env, optionalEnv } from "./env.server";
 
 let admin: SupabaseClient | null = null;
 
@@ -13,9 +13,15 @@ export function legacyDb(): SupabaseClient {
   return admin;
 }
 
-/** Anon client, used only to check admin email and password and to validate admin sessions. */
+/** Anon client for Supabase Auth: customer and admin sign-in, signup, email links and session checks. */
 export function authClient(): SupabaseClient {
-  return createClient(env("SUPABASE_URL"), env("SUPABASE_ANON_KEY"), {
+  const url = optionalEnv("SUPABASE_URL");
+  const anonKey = optionalEnv("SUPABASE_ANON_KEY");
+  if (!url || !anonKey) {
+    console.error("[auth] Set SUPABASE_URL and SUPABASE_ANON_KEY in the Netlify environment variables.");
+    throw new Error("Login is not available right now. Please try again later or WhatsApp us.");
+  }
+  return createClient(url, anonKey, {
     auth: { persistSession: false, autoRefreshToken: false },
   });
 }
