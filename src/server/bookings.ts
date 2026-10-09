@@ -5,6 +5,9 @@ import { createRental, createTrial, REF_PATTERN, UserError, type RentalLine } fr
 
 function friendly(error: unknown): never {
   if (error instanceof UserError) throw error;
+  if (error instanceof Error && /Missing environment variable|Missing database connection string/i.test(error.message)) {
+    throw new Error("Orders are temporarily unavailable while setup is being completed. Please WhatsApp us and we will place it for you.");
+  }
   console.error("[booking]", error);
   throw new Error("Something went wrong on our side. Please try again, or WhatsApp us.");
 }
