@@ -1,0 +1,85 @@
+import { d as dressesIn, t as COLLECTIONS } from "./mail.server-BoiOOyIE.mjs";
+import { S as require_jsx_runtime, b as Link } from "../_libs/@tanstack/react-router+[...].mjs";
+import { n as Shell, r as imgSize, t as PageIntro } from "./shell-CisVLkri.mjs";
+import { t as Prose } from "./prose-CI_UvwSp.mjs";
+//#region node_modules/.nitro/vite/services/ssr/assets/collections-DIJPDFjz.js
+var import_jsx_runtime = require_jsx_runtime();
+function CollectionsPage() {
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Shell, { children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("main", {
+		className: "mx-auto max-w-6xl px-5 py-12",
+		children: [
+			/* @__PURE__ */ (0, import_jsx_runtime.jsx)(PageIntro, {
+				kicker: "The rail",
+				title: "Collections",
+				lede: "Three families this Navratri. Each dress still has its own page, date and price."
+			}),
+			/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+				className: "grid gap-10",
+				children: COLLECTIONS.map((collection) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("article", {
+					className: "grid items-center gap-6 border-b border-line pb-10 md:grid-cols-2",
+					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("img", {
+						src: collection.image,
+						...imgSize(collection.image),
+						loading: "lazy",
+						decoding: "async",
+						alt: collection.alt,
+						className: "portrait w-full"
+					}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
+						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
+							className: "kicker",
+							children: [dressesIn(collection.id).length, " designs"]
+						}),
+						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
+							className: "mt-2 font-display text-4xl text-cream sm:text-5xl",
+							children: collection.name
+						}),
+						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+							className: "mt-3 text-mute",
+							children: collection.line
+						}),
+						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("ul", {
+							className: "mt-4 space-y-1",
+							children: dressesIn(collection.id).map((dress) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("li", { children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Link, {
+								to: "/dress/$slug",
+								params: { slug: dress.slug },
+								className: "underline underline-offset-4",
+								children: dress.name
+							}) }, dress.slug))
+						}),
+						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Link, {
+							to: "/shop",
+							search: { c: collection.id },
+							className: "btn btn-solid mt-6",
+							children: ["Shop ", collection.name]
+						})
+					] })]
+				}, collection.id))
+			}),
+			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Prose, {
+				title: "How to choose your Navratri look",
+				children: [
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { children: "Start with the hem. The Peacock Border collection puts wide bands of peacocks, florals and mirror tiles at the bottom of the flare, so the pattern shows most when you spin. Mirror Work leans on panels set with squares of mirror that catch the string lights. Festive Lehengas use butis, stripes and patchwork for a lighter, more playful skirt." }),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { children: "Then think about the night. For a long Garba, a lighter flare such as the magenta buti is easier to dance in for hours. For a sangeet or a festive evening, the black and gold lehengas read well from across the room. Every piece is a full set with chaniya, choli and dupatta, steam pressed before it reaches you." }),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { children: "Prices are per day and shown on every dress page. Two-day rentals take 10% off the daily rate, three-day rentals take 20% off, and delivery and pickup inside Indore are free. We confirm each date on WhatsApp, and you pay cash on delivery." }),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", { children: [
+						"Still deciding? Pick up to three outfits for the ",
+						/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Link, {
+							to: "/trial",
+							className: "text-gold underline",
+							children: "free home trial"
+						}),
+						", or read ",
+						/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Link, {
+							to: "/how-it-works",
+							className: "text-gold underline",
+							children: "how a rental works"
+						}),
+						" before you book."
+					] })
+				]
+			})
+		]
+	}) });
+}
+//#endregion
+export { CollectionsPage as component };

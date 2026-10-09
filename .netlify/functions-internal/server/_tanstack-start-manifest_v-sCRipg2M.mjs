@@ -1,0 +1,211 @@
+//#region node_modules/.nitro/vite/services/ssr/assets/_tanstack-start-manifest_v-sCRipg2M.js
+var tsrStartManifest = () => ({ routes: {
+	__root__: {
+		filePath: "/home/runner/work/classic-aura-garba-5.0/classic-aura-garba-5.0/src/routes/__root.tsx",
+		children: [
+			"/",
+			"/$",
+			"/about",
+			"/admin",
+			"/checkout",
+			"/collections",
+			"/confirmed",
+			"/contact",
+			"/exchange",
+			"/faq",
+			"/how-it-works",
+			"/login",
+			"/privacy",
+			"/shipping",
+			"/shop",
+			"/size-guide",
+			"/terms",
+			"/trial",
+			"/api/razorpay-return",
+			"/api/razorpay-webhook",
+			"/dress/$slug"
+		],
+		preloads: [
+			"/assets/index-Dzg5OA76.js",
+			"/assets/site-Bn20muqy.js",
+			"/assets/redirect-DmtLUW0N.js",
+			"/assets/theme-DmB3gOSX.js",
+			"/assets/preload-helper-Ce5uQjth.js"
+		],
+		scripts: [{ attrs: {
+			type: "module",
+			async: !0,
+			src: "/assets/index-Dzg5OA76.js"
+		} }]
+	},
+	"/": {
+		filePath: "/home/runner/work/classic-aura-garba-5.0/classic-aura-garba-5.0/src/routes/index.tsx",
+		children: void 0,
+		preloads: [
+			"/assets/routes-Dc_r7ZXc.js",
+			"/assets/shell-2Z6ZCiFH.js",
+			"/assets/faq-C9FYOzsT.js",
+			"/assets/dress-card-HsWTUIZ-.js"
+		]
+	},
+	"/$": {
+		filePath: "/home/runner/work/classic-aura-garba-5.0/classic-aura-garba-5.0/src/routes/$.tsx",
+		children: void 0,
+		preloads: ["/assets/_-Di87LY9J.js", "/assets/shell-2Z6ZCiFH.js"]
+	},
+	"/about": {
+		filePath: "/home/runner/work/classic-aura-garba-5.0/classic-aura-garba-5.0/src/routes/about.tsx",
+		children: void 0,
+		preloads: [
+			"/assets/about-D4S0cS_8.js",
+			"/assets/shell-2Z6ZCiFH.js",
+			"/assets/prose-EEhxS8r3.js"
+		]
+	},
+	"/admin": {
+		filePath: "/home/runner/work/classic-aura-garba-5.0/classic-aura-garba-5.0/src/routes/admin.tsx",
+		children: void 0,
+		preloads: ["/assets/admin-D_bE9hkK.js", "/assets/createServerFn-CUI6px05.js"]
+	},
+	"/checkout": {
+		filePath: "/home/runner/work/classic-aura-garba-5.0/classic-aura-garba-5.0/src/routes/checkout.tsx",
+		children: void 0,
+		preloads: [
+			"/assets/checkout-B1iFQLcO.js",
+			"/assets/useNavigate-DnwYXHFL.js",
+			"/assets/shell-2Z6ZCiFH.js",
+			"/assets/customer-form-BsH_dduc.js",
+			"/assets/bookings-BfPDTBis.js"
+		]
+	},
+	"/collections": {
+		filePath: "/home/runner/work/classic-aura-garba-5.0/classic-aura-garba-5.0/src/routes/collections.tsx",
+		children: void 0,
+		preloads: [
+			"/assets/collections-BmKScnOp.js",
+			"/assets/shell-2Z6ZCiFH.js",
+			"/assets/prose-EEhxS8r3.js"
+		]
+	},
+	"/confirmed": {
+		filePath: "/home/runner/work/classic-aura-garba-5.0/classic-aura-garba-5.0/src/routes/confirmed.tsx",
+		children: void 0,
+		preloads: [
+			"/assets/confirmed-BO-5kVin.js",
+			"/assets/shell-2Z6ZCiFH.js",
+			"/assets/bookings-BfPDTBis.js"
+		]
+	},
+	"/contact": {
+		filePath: "/home/runner/work/classic-aura-garba-5.0/classic-aura-garba-5.0/src/routes/contact.tsx",
+		children: void 0,
+		preloads: [
+			"/assets/contact-CK8aRtNt.js",
+			"/assets/shell-2Z6ZCiFH.js",
+			"/assets/prose-EEhxS8r3.js"
+		]
+	},
+	"/exchange": {
+		filePath: "/home/runner/work/classic-aura-garba-5.0/classic-aura-garba-5.0/src/routes/exchange.tsx",
+		children: void 0,
+		preloads: [
+			"/assets/exchange-Bld-qjGQ.js",
+			"/assets/shell-2Z6ZCiFH.js",
+			"/assets/prose-EEhxS8r3.js"
+		]
+	},
+	"/faq": {
+		filePath: "/home/runner/work/classic-aura-garba-5.0/classic-aura-garba-5.0/src/routes/faq.tsx",
+		children: void 0,
+		preloads: [
+			"/assets/faq-Bjm3bGUe.js",
+			"/assets/shell-2Z6ZCiFH.js",
+			"/assets/faq-C9FYOzsT.js"
+		]
+	},
+	"/how-it-works": {
+		filePath: "/home/runner/work/classic-aura-garba-5.0/classic-aura-garba-5.0/src/routes/how-it-works.tsx",
+		children: void 0,
+		preloads: [
+			"/assets/how-it-works-DyV-YTaW.js",
+			"/assets/shell-2Z6ZCiFH.js",
+			"/assets/prose-EEhxS8r3.js"
+		]
+	},
+	"/login": {
+		filePath: "/home/runner/work/classic-aura-garba-5.0/classic-aura-garba-5.0/src/routes/login.tsx",
+		children: void 0,
+		preloads: [
+			"/assets/login-DlxAE9_R.js",
+			"/assets/createServerFn-CUI6px05.js",
+			"/assets/shell-2Z6ZCiFH.js"
+		]
+	},
+	"/privacy": {
+		filePath: "/home/runner/work/classic-aura-garba-5.0/classic-aura-garba-5.0/src/routes/privacy.tsx",
+		children: void 0,
+		preloads: [
+			"/assets/privacy-DAxDr5Ou.js",
+			"/assets/shell-2Z6ZCiFH.js",
+			"/assets/prose-EEhxS8r3.js"
+		]
+	},
+	"/shipping": {
+		filePath: "/home/runner/work/classic-aura-garba-5.0/classic-aura-garba-5.0/src/routes/shipping.tsx",
+		children: void 0,
+		preloads: [
+			"/assets/shipping-ChYTMau8.js",
+			"/assets/shell-2Z6ZCiFH.js",
+			"/assets/prose-EEhxS8r3.js"
+		]
+	},
+	"/shop": {
+		filePath: "/home/runner/work/classic-aura-garba-5.0/classic-aura-garba-5.0/src/routes/shop.tsx",
+		children: void 0,
+		preloads: [
+			"/assets/shop-D98W28Qq.js",
+			"/assets/shell-2Z6ZCiFH.js",
+			"/assets/prose-EEhxS8r3.js",
+			"/assets/dress-card-HsWTUIZ-.js"
+		]
+	},
+	"/size-guide": {
+		filePath: "/home/runner/work/classic-aura-garba-5.0/classic-aura-garba-5.0/src/routes/size-guide.tsx",
+		children: void 0,
+		preloads: [
+			"/assets/size-guide-CfEtW3Uq.js",
+			"/assets/shell-2Z6ZCiFH.js",
+			"/assets/prose-EEhxS8r3.js"
+		]
+	},
+	"/terms": {
+		filePath: "/home/runner/work/classic-aura-garba-5.0/classic-aura-garba-5.0/src/routes/terms.tsx",
+		children: void 0,
+		preloads: ["/assets/terms-C0L76JN-.js", "/assets/shell-2Z6ZCiFH.js"]
+	},
+	"/trial": {
+		filePath: "/home/runner/work/classic-aura-garba-5.0/classic-aura-garba-5.0/src/routes/trial.tsx",
+		children: void 0,
+		preloads: [
+			"/assets/trial-K6EOWQxw.js",
+			"/assets/useNavigate-DnwYXHFL.js",
+			"/assets/shell-2Z6ZCiFH.js",
+			"/assets/prose-EEhxS8r3.js",
+			"/assets/customer-form-BsH_dduc.js",
+			"/assets/bookings-BfPDTBis.js"
+		]
+	},
+	"/dress/$slug": {
+		filePath: "/home/runner/work/classic-aura-garba-5.0/classic-aura-garba-5.0/src/routes/dress.$slug.tsx",
+		children: void 0,
+		preloads: [
+			"/assets/dress._slug-Dehq7-5P.js",
+			"/assets/useNavigate-DnwYXHFL.js",
+			"/assets/shell-2Z6ZCiFH.js",
+			"/assets/prose-EEhxS8r3.js",
+			"/assets/dress-card-HsWTUIZ-.js"
+		]
+	}
+} });
+//#endregion
+export { tsrStartManifest };

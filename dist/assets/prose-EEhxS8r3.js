@@ -1,0 +1,1 @@
+import{v as e}from"./site-Bn20muqy.js";var t=e();function n({title:e,children:n}){return(0,t.jsxs)(`section`,{className:`mt-14 max-w-3xl space-y-4 text-mute`,children:[(0,t.jsx)(`h2`,{className:`font-display text-3xl text-cream md:text-4xl`,children:e}),n]})}export{n as t};
