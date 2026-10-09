@@ -6,4 +6,4 @@ Disallow: /api/
 Disallow: /checkout
 Disallow: /confirmed
 
-Sitemap: https://classicauragarba.netlify.app/sitemap.xml
+Sitemap: https://classicauragarba.vercel.app/sitemap.xml
