@@ -2,6 +2,7 @@ import { randomInt } from "node:crypto";
 import { validateCustomer, type Customer } from "@/lib/customer";
 import { dressBySlug } from "@/lib/dresses";
 import { dayStatus, ONLINE_PAYMENT, quote } from "@/lib/site";
+import { background } from "./background.server";
 import { db, type BookingRow } from "./db.server";
 import { sendBookingEmails } from "./mail.server";
 import { createPaymentLink } from "./razorpay.server";
@@ -67,6 +68,30 @@ function customerFields(customer: Customer) {
   };
 }
 
+type Item = { dress_slug: string; rental_date: string | null; days: number | null; fee: number };
+
+/** What the confirmation page needs, returned straight from the order call so it can render instantly. */
+function summary(input: { ref: string; kind: "rental" | "trial"; status: string; total: number; name: string; payUrl: string | null; items: Item[] }) {
+  return {
+    ref: input.ref,
+    kind: input.kind,
+    status: input.status,
+    total: input.total,
+    firstName: input.name.split(" ")[0],
+    payUrl: input.payUrl,
+    online: Boolean(input.payUrl),
+    deliverySlot: null as string | null,
+    items: input.items,
+  };
+}
+
+/** Save a booking and all its items in one database call. */
+async function saveBooking(kind: "rental" | "trial", status: string, ref: string, total: number, fields: ReturnType<typeof customerFields>, items: Item[]) {
+  const { data, error } = await db().rpc("create_booking", { p: { ref, kind, status, total, ...fields }, items });
+  if (error || !data) throw error ?? new Error("Could not save booking");
+  return data as string;
+}
+
 export async function createRental(customer: Customer, lines: RentalLine[]) {
   const problems = validateCustomer(customer);
   if (Object.keys(problems).length) throw new UserError("Please check your delivery details.");
@@ -85,34 +110,21 @@ export async function createRental(customer: Customer, lines: RentalLine[]) {
     return { ...line, dress, fee: quote(dress.price, line.days).fee };
   });
   const total = priced.reduce((sum, line) => sum + line.fee, 0);
+  const items: Item[] = priced.map((line) => ({ dress_slug: line.slug, rental_date: line.date, days: line.days, fee: line.fee }));
 
   const fields = customerFields(customer);
-  await assertNotSpamming(fields.mobile);
-  for (const line of priced) await assertNoConflict(line, line.dress.name);
+  // All the checks run at the same time instead of one after another.
+  await Promise.all([assertNotSpamming(fields.mobile), ...priced.map((line) => assertNoConflict(line, line.dress.name))]);
 
   const ref = makeRef();
-  const { data: booking, error } = await db()
-    .from("bookings")
-    .insert({ ref, kind: "rental", status: ONLINE_PAYMENT ? "pending_payment" : "requested", total, ...fields })
-    .select("*")
-    .single();
-  if (error || !booking) throw error ?? new Error("Could not save booking");
-
-  const { error: itemsError } = await db()
-    .from("booking_items")
-    .insert(priced.map((line) => ({ booking_id: booking.id, dress_slug: line.slug, rental_date: line.date, days: line.days, fee: line.fee })));
-  if (itemsError) {
-    await db().from("bookings").delete().eq("id", booking.id);
-    throw itemsError;
-  }
+  const status = ONLINE_PAYMENT ? "pending_payment" : "requested";
+  const id = await saveBooking("rental", status, ref, total, fields, items);
 
   if (!ONLINE_PAYMENT) {
-    // Cash on delivery: no payment step. Save the request and email both sides.
-    await sendBookingEmails({
-      ...(booking as BookingRow),
-      booking_items: priced.map((line) => ({ dress_slug: line.slug, rental_date: line.date, days: line.days, fee: line.fee })),
-    });
-    return { ref, payUrl: null as string | null };
+    // Cash on delivery: respond now, send the emails in the background.
+    const row = { ...fields, id, ref, kind: "rental", status, total, booking_items: items, created_at: new Date().toISOString() } as unknown as BookingRow;
+    background(sendBookingEmails(row));
+    return { ref, payUrl: null as string | null, summary: summary({ ref, kind: "rental", status, total, name: fields.name, payUrl: null, items }) };
   }
 
   try {
@@ -124,10 +136,10 @@ export async function createRental(customer: Customer, lines: RentalLine[]) {
       mobile: fields.mobile,
       email: fields.email,
     });
-    await db().from("bookings").update({ razorpay_link_id: link.id, razorpay_link_url: link.url }).eq("id", booking.id);
-    return { ref, payUrl: link.url };
+    await db().from("bookings").update({ razorpay_link_id: link.id, razorpay_link_url: link.url }).eq("id", id);
+    return { ref, payUrl: link.url as string | null, summary: summary({ ref, kind: "rental", status, total, name: fields.name, payUrl: link.url, items }) };
   } catch (cause) {
-    await db().from("bookings").delete().eq("id", booking.id);
+    await db().from("bookings").delete().eq("id", id);
     throw cause;
   }
 }
@@ -141,21 +153,11 @@ export async function createTrial(customer: Customer, slugs: string[]) {
   const fields = customerFields(customer);
   await assertNotSpamming(fields.mobile);
   const ref = makeRef();
-  const { data: booking, error } = await db()
-    .from("bookings")
-    .insert({ ref, kind: "trial", status: "requested", total: 0, ...fields })
-    .select("*")
-    .single();
-  if (error || !booking) throw error ?? new Error("Could not save request");
-  const { error: itemsError } = await db()
-    .from("booking_items")
-    .insert(slugs.map((slug) => ({ booking_id: booking.id, dress_slug: slug, fee: 0 })));
-  if (itemsError) {
-    await db().from("bookings").delete().eq("id", booking.id);
-    throw itemsError;
-  }
-  await sendBookingEmails({ ...(booking as BookingRow), booking_items: slugs.map((slug) => ({ dress_slug: slug, rental_date: null, days: null, fee: 0 })) });
-  return { ref, payUrl: null as string | null };
+  const items: Item[] = slugs.map((slug) => ({ dress_slug: slug, rental_date: null, days: null, fee: 0 }));
+  const id = await saveBooking("trial", "requested", ref, 0, fields, items);
+  const row = { ...fields, id, ref, kind: "trial", status: "requested", total: 0, booking_items: items, created_at: new Date().toISOString() } as unknown as BookingRow;
+  background(sendBookingEmails(row));
+  return { ref, payUrl: null as string | null, summary: summary({ ref, kind: "trial", status: "requested", total: 0, name: fields.name, payUrl: null, items }) };
 }
 
 /** Mark a booking paid exactly once (the webhook and the return page can both call this) and send the emails. */
