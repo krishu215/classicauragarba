@@ -1,0 +1,148 @@
+import { d as listBookings, l as isLegacyAccount, n as authClient, p as siteUrl, u as legacyDb } from "./booking-repository.server-DMeZHa6D.mjs";
+import { a as getCookie, t as createServerFn } from "./ssr.mjs";
+import { t as createServerRpc } from "./createServerRpc-A6pJPYTF.mjs";
+import { a as writeSession, i as resolveUser, n as CUSTOMER_COOKIES, r as clearSession } from "./session.server-DBVo6uza.mjs";
+import { t as getIdentityConfig } from "../_libs/gotrue-js+netlify__identity.mjs";
+//#region node_modules/.nitro/vite/services/ssr/assets/customer-JYz9IK_Q.js
+/** The customer-safe view of a booking row. */
+function shapeOrder(row) {
+	return {
+		ref: row.ref,
+		kind: row.kind,
+		status: row.status,
+		total: row.total,
+		firstName: row.name.split(" ")[0],
+		area: row.area,
+		online: Boolean(row.razorpay_link_url),
+		deliverySlot: row.delivery_slot ?? null,
+		createdAt: row.created_at,
+		updatedAt: row.updated_at,
+		items: row.booking_items ?? []
+	};
+}
+var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+var cleanEmail = (value) => value.trim().toLowerCase();
+async function verifiedCustomer() {
+	const token = getCookie("nf_jwt");
+	if (token) {
+		const url = getIdentityConfig()?.url ?? `${siteUrl()}/.netlify/identity`;
+		try {
+			const response = await fetch(`${url}/user`, {
+				headers: { Authorization: `Bearer ${token}` },
+				signal: AbortSignal.timeout(1e4)
+			});
+			if (response.ok) {
+				const user = await response.json();
+				if (user.id && user.email && user.confirmed_at) return {
+					email: user.email,
+					name: user.user_metadata?.full_name ?? user.user_metadata?.name ?? ""
+				};
+			}
+		} catch {
+			throw new Error("Account verification is temporarily unavailable. Please try again.");
+		}
+	}
+	const user = await resolveUser(CUSTOMER_COOKIES);
+	if (!user?.email || !user.email_confirmed_at || !await isLegacyAccount(user.id)) return null;
+	return {
+		email: user.email,
+		name: String(user.user_metadata?.name ?? "")
+	};
+}
+var customerSignIn_createServerFn_handler = createServerRpc({
+	id: "729d01ca236b01f4d7434ee440052c6d29a320670378b374801faa72e7676a7d",
+	name: "customerSignIn",
+	filename: "src/server/customer.ts"
+}, (opts) => customerSignIn.__executeServer(opts));
+var customerSignIn = createServerFn({ method: "POST" }).inputValidator((data) => data).handler(customerSignIn_createServerFn_handler, async ({ data }) => {
+	const { data: result, error } = await authClient().auth.signInWithPassword({
+		email: cleanEmail(data.email),
+		password: data.password
+	});
+	if (error || !result.session || !result.user) {
+		if (error?.code === "email_not_confirmed") throw new Error("Please verify your email first. We sent you a link, so check your inbox and spam folder.");
+		throw new Error("Wrong email or password.");
+	}
+	if (!result.user.email_confirmed_at) throw new Error("Please verify your email first. Check your inbox and spam folder.");
+	if (!await isLegacyAccount(result.user.id)) throw new Error("Please create your account on this website and verify your email.");
+	writeSession(CUSTOMER_COOKIES, result.session);
+	return {
+		email: result.user.email ?? "",
+		name: String(result.user.user_metadata?.name ?? "")
+	};
+});
+var customerSignOut_createServerFn_handler = createServerRpc({
+	id: "3b7be3d2fabc90739fb512a3f0c9de60f09b77137630b8af0b54e0efa1433c94",
+	name: "customerSignOut",
+	filename: "src/server/customer.ts"
+}, (opts) => customerSignOut.__executeServer(opts));
+var customerSignOut = createServerFn({ method: "POST" }).handler(customerSignOut_createServerFn_handler, async () => {
+	clearSession(CUSTOMER_COOKIES);
+	return { ok: true };
+});
+var customerMe_createServerFn_handler = createServerRpc({
+	id: "8327f1b25fe85e8e2cc7eba1ff143cbcd0e4c4148d77ec8e198c8c47cbff2989",
+	name: "customerMe",
+	filename: "src/server/customer.ts"
+}, (opts) => customerMe.__executeServer(opts));
+var customerMe = createServerFn({ method: "GET" }).handler(customerMe_createServerFn_handler, async () => {
+	return verifiedCustomer();
+});
+var customerOrders_createServerFn_handler = createServerRpc({
+	id: "1d200bd736d6e6ca08393789f2bc15d7bddf60acf12b8d541d436b3ee1fa8d14",
+	name: "customerOrders",
+	filename: "src/server/customer.ts"
+}, (opts) => customerOrders.__executeServer(opts));
+var customerOrders = createServerFn({ method: "GET" }).handler(customerOrders_createServerFn_handler, async () => {
+	const user = await verifiedCustomer();
+	if (!user?.email) throw new Error("Please sign in again.");
+	return (await listBookings({
+		email: user.email,
+		limit: 30
+	})).map((row) => shapeOrder(row));
+});
+var customerResend_createServerFn_handler = createServerRpc({
+	id: "a2e493f593a19a6a73c2358bca4bae6c0b53f6e2d7a969678aab68479806b0eb",
+	name: "customerResend",
+	filename: "src/server/customer.ts"
+}, (opts) => customerResend.__executeServer(opts));
+var customerResend = createServerFn({ method: "POST" }).inputValidator((data) => data).handler(customerResend_createServerFn_handler, async ({ data }) => {
+	const email = cleanEmail(data.email);
+	if (EMAIL_RE.test(email)) {
+		const { error } = await authClient().auth.resend({
+			type: "signup",
+			email,
+			options: { emailRedirectTo: `${siteUrl()}/login` }
+		});
+		if (error) console.error("[resend] Verification email could not be sent.");
+	}
+	return { ok: true };
+});
+var customerForgot_createServerFn_handler = createServerRpc({
+	id: "5e260d07cc4d4f28f8d37fadff4172be91cfb2a83acb5c33a69c33770273821f",
+	name: "customerForgot",
+	filename: "src/server/customer.ts"
+}, (opts) => customerForgot.__executeServer(opts));
+var customerForgot = createServerFn({ method: "POST" }).inputValidator((data) => data).handler(customerForgot_createServerFn_handler, async ({ data }) => {
+	const email = cleanEmail(data.email);
+	if (EMAIL_RE.test(email)) {
+		const { error } = await authClient().auth.resetPasswordForEmail(email, { redirectTo: `${siteUrl()}/login` });
+		if (error) console.error("[forgot] Password recovery email could not be sent.");
+	}
+	return { ok: true };
+});
+var customerUpdatePassword_createServerFn_handler = createServerRpc({
+	id: "1fd14c0c1ba0acc64394e09157513cacff9ca3c6dbc8b2af5a04b09dbc87f9e2",
+	name: "customerUpdatePassword",
+	filename: "src/server/customer.ts"
+}, (opts) => customerUpdatePassword.__executeServer(opts));
+var customerUpdatePassword = createServerFn({ method: "POST" }).inputValidator((data) => data).handler(customerUpdatePassword_createServerFn_handler, async ({ data }) => {
+	if (data.password.length < 8) throw new Error("Password must be at least 8 characters.");
+	const { data: found, error } = await authClient().auth.getUser(data.accessToken);
+	if (error || !found.user) throw new Error("This reset link has expired. Please ask for a new one.");
+	const { error: updateError } = await legacyDb().auth.admin.updateUserById(found.user.id, { password: data.password });
+	if (updateError) throw new Error("Could not update the password. Please try again.");
+	return { ok: true };
+});
+//#endregion
+export { customerForgot_createServerFn_handler, customerMe_createServerFn_handler, customerOrders_createServerFn_handler, customerResend_createServerFn_handler, customerSignIn_createServerFn_handler, customerSignOut_createServerFn_handler, customerUpdatePassword_createServerFn_handler };
