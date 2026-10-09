@@ -13,7 +13,7 @@ Hero image: `public/hero.jpg` (replace the file to change it).
 ## Backend: bookings, payments, emails, admin
 
 Server code lives in `src/server` (TanStack Start server functions and two API routes). Orders, order items and
-the email delivery queue are stored in Netlify Database using Drizzle. The schema is in `db/schema.ts` and
+the email delivery queue are stored in Supabase Postgres using Drizzle. The schema is in `db/schema.ts` and
 deploy-time migrations are in `netlify/database/migrations`.
 
 - Checkout calls `submitRental`, which re-prices the order from `src/lib/dresses.ts`, checks the dates, saves the
@@ -25,7 +25,8 @@ deploy-time migrations are in `netlify/database/migrations`.
 - `/admin` is a private dashboard (Supabase Auth, only emails in `ADMIN_EMAILS`): see every booking, change its
   status, add notes, export CSV.
 
-Setup: configure the server environment variables in Netlify, add the webhook in Razorpay
+Setup: configure the server environment variables in Netlify, including `SUPABASE_DB_URL` (or `DATABASE_URL`),
+add the webhook in Razorpay
 (URL `https://<your-site>/api/razorpay-webhook`, events `payment_link.paid` and `payment_link.expired`), verify your
 sending domain in Resend, and retain the existing admin user in Supabase.
 
