@@ -10,6 +10,7 @@ import { useBooking } from "@/lib/booking-store";
 import { emptyCustomer, validateCustomer, type Customer, type FieldErrors } from "@/lib/customer";
 import { DRESSES, dressBySlug } from "@/lib/dresses";
 import { inr } from "@/lib/site";
+import { rememberBooking } from "@/lib/confirm-cache";
 import { submitTrial } from "@/server/bookings";
 
 export const Route = createFileRoute("/trial")({
@@ -69,6 +70,7 @@ function TrialPage() {
     setFormError("");
     try {
       const result = await submitTrial({ data: { customer, slugs: trial } });
+      rememberBooking(result.summary);
       void navigate({ to: "/confirmed", search: { ref: result.ref } });
     } catch (cause) {
       setFormError(cause instanceof Error ? cause.message : "Could not send your request. Please try again.");

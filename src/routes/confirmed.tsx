@@ -7,6 +7,7 @@ import { Shell } from "@/components/shell";
 import { useBooking } from "@/lib/booking-store";
 import { dressBySlug } from "@/lib/dresses";
 import { formatLong, inr, PHONE_DISPLAY, PHONE_TEL, waLink } from "@/lib/site";
+import { recallBooking } from "@/lib/confirm-cache";
 import { getBookingStatus } from "@/server/bookings";
 
 export const Route = createFileRoute("/confirmed")({
@@ -23,7 +24,7 @@ function ConfirmedPage() {
   const { ref } = Route.useSearch();
   const clearRentals = useBooking((state) => state.clearRentals);
   const clearTrial = useBooking((state) => state.clearTrial);
-  const [booking, setBooking] = useState<Status | null | undefined>(undefined);
+  const [booking, setBooking] = useState<Status | null | undefined>(() => recallBooking(ref) ?? undefined);
 
   // Load the booking, and keep checking for a short while if payment has not been recorded yet.
   useEffect(() => {

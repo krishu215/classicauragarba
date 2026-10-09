@@ -9,6 +9,7 @@ import { useBooking, useBookingReady } from "@/lib/booking-store";
 import { emptyCustomer, validateCustomer, type Customer, type FieldErrors } from "@/lib/customer";
 import { dressBySlug } from "@/lib/dresses";
 import { dayStatus, formatLong, inr, quote, waLink } from "@/lib/site";
+import { rememberBooking } from "@/lib/confirm-cache";
 import { submitRental } from "@/server/bookings";
 
 export const Route = createFileRoute("/checkout")({
@@ -91,6 +92,7 @@ function CheckoutPage() {
         data: { customer, lines: lines.map((line) => ({ slug: line.slug, date: line.date, days: line.days })) },
       });
       if (save) setSaved(customer);
+      rememberBooking(result.summary);
       // Online payment hands over to Razorpay. Cash on delivery goes straight to the confirmation page.
       if (result.payUrl) window.location.assign(result.payUrl);
       else void navigate({ to: "/confirmed", search: { ref: result.ref } });
