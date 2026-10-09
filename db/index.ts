@@ -24,5 +24,5 @@ export function database() {
       idle_timeout: 20,
     });
   }
-  return drizzle(sqlClient, { schema });
+  return drizzle({ client: sqlClient, schema });
 }
