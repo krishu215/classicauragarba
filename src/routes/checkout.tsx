@@ -136,6 +136,7 @@ function CheckoutPage() {
                   id="co-time"
                   className="field"
                   placeholder="Any time that suits the team"
+                  maxLength={120}
                   value={customer.time}
                   onChange={(event) => setCustomer({ ...customer, time: event.target.value })}
                 />
@@ -148,13 +149,14 @@ function CheckoutPage() {
                   id="co-notes"
                   className="field min-h-24"
                   placeholder="Gate code, landmark, fitting notes — anything that helps us"
+                  maxLength={1000}
                   value={customer.notes}
                   onChange={(event) => setCustomer({ ...customer, notes: event.target.value })}
                 />
               </div>
             </div>
             <p className="mt-5 border border-dashed border-line bg-paper px-4 py-3 text-sm text-mute">
-              We deliver across Indore only. Home delivery and pickup are free. Our team confirms the delivery time with you on WhatsApp after payment.
+              We deliver across Indore only. Home delivery and pickup are free. Our team confirms the delivery time with you on WhatsApp after you book.
             </p>
             <label className="mt-5 flex items-start gap-3 text-sm">
               <input type="checkbox" className="mt-1 size-4" checked={save} onChange={(event) => setSave(event.target.checked)} />

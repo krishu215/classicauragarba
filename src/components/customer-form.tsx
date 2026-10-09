@@ -1,4 +1,4 @@
-import type { Customer, FieldErrors } from "@/lib/customer";
+import { CUSTOMER_LIMITS, type Customer, type FieldErrors } from "@/lib/customer";
 
 function set<K extends keyof Customer>(customer: Customer, key: K, value: string): Customer {
   return { ...customer, [key]: value };
@@ -33,6 +33,7 @@ export function CustomerFields({
             id={id}
             className="field min-h-24"
             placeholder={placeholder}
+            maxLength={CUSTOMER_LIMITS[key]}
             value={value[key]}
             aria-invalid={Boolean(error)}
             onChange={(event) => onChange(set(value, key, event.target.value))}
@@ -45,6 +46,7 @@ export function CustomerFields({
             inputMode={key === "mobile" || key === "whatsapp" || key === "pincode" ? "numeric" : undefined}
             autoComplete={key === "email" ? "email" : key === "name" ? "name" : key === "mobile" ? "tel" : undefined}
             placeholder={placeholder}
+            maxLength={CUSTOMER_LIMITS[key]}
             value={value[key]}
             aria-invalid={Boolean(error)}
             onChange={(event) => onChange(set(value, key, event.target.value))}

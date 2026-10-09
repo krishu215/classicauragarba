@@ -34,6 +34,7 @@ function ConfirmedPage() {
     let stopped = false;
     let tries = 0;
     async function check() {
+      if (stopped) return;
       try {
         const result = await getBookingStatus({ data: { ref: ref ?? "" } });
         if (stopped) return;
@@ -87,6 +88,9 @@ function ConfirmedPage() {
   const expired = booking.status === "expired";
   const cancelled = booking.status === "cancelled";
   const cash = !isTrial && booking.status === "requested";
+  const returned = booking.status === "returned";
+  // Cash-on-delivery orders stay unpaid until the outfit is handed over.
+  const unpaidCash = !isTrial && !booking.online && ["requested", "confirmed", "delivered"].includes(booking.status);
 
   const confirmedNow = booking.status === "confirmed" || booking.status === "delivered";
   const slotLine = booking.deliverySlot ? `Delivery time: ${booking.deliverySlot}.` : "We will message you on WhatsApp with the delivery time.";
@@ -105,9 +109,9 @@ function ConfirmedPage() {
         ? "Payment window closed"
         : cancelled
           ? "Booking cancelled"
-          : confirmedNow
-            ? "Booking confirmed ✓"
-            : "Booking confirmed";
+          : returned
+            ? "Rental complete"
+            : "Payment received ✓";
 
   return (
     <Shell>
@@ -125,7 +129,9 @@ function ConfirmedPage() {
               ? `${booking.firstName}, we have not received the payment yet. If you have just paid, this page updates by itself within a minute.`
               : expired || cancelled
                 ? `${booking.firstName}, this booking is not active. You can start again or WhatsApp us for help.`
-                : `${booking.firstName}, payment received. A confirmation is on its way to your email, and we will message you on WhatsApp to fix the delivery time.`}
+                : returned
+                  ? `${booking.firstName}, your outfits are back with us. Thank you for renting with Classic Aura.`
+                  : `${booking.firstName}, payment received. A confirmation is on its way to your email, and we will message you on WhatsApp to fix the delivery time.`}
         </p>
         <ul className="mt-6 divide-y divide-line border-y border-line">
           {booking.items.map((item) => {
@@ -148,7 +154,7 @@ function ConfirmedPage() {
         </ul>
         {!isTrial ? (
           <p className="mt-4 font-display text-3xl text-cream">
-            {cash ? "Cash on delivery" : waiting || expired || cancelled ? "Total" : "Paid"} {inr(booking.total)}
+            {unpaidCash ? "Cash on delivery" : waiting || expired || cancelled || (returned && !booking.online) ? "Total" : "Paid"} {inr(booking.total)}
           </p>
         ) : (
           <p className="mt-4 text-mute">Delivery of the trial is free. Rent only what you love.</p>
