@@ -2,7 +2,8 @@ import { DRESSES, type Dress } from "@/lib/dresses";
 import { FAQS } from "@/lib/faq";
 import { EMAIL, INSTAGRAM, PHONE_TEL } from "@/lib/site";
 
-export const SITE_URL = "https://classicauragarba.netlify.app";
+// The live address of the site. If you add your own domain later, set VITE_SITE_URL in Vercel (or change this line) and redeploy.
+export const SITE_URL = (((import.meta as unknown as { env?: Record<string, string | undefined> }).env?.VITE_SITE_URL) ?? "https://classicauragarba.vercel.app").replace(/\/+$/, "");
 export const SITE_NAME = "Classic Aura";
 const BUSINESS_ID = `${SITE_URL}/#business`;
 const WEBSITE_ID = `${SITE_URL}/#website`;
@@ -53,9 +54,8 @@ export function graph(...nodes: object[]) {
   return { "@context": "https://schema.org", "@graph": nodes };
 }
 
-const prices = DRESSES.map((dress) => dress.price);
-
 export function businessNode() {
+  const prices = DRESSES.map((dress) => dress.price);
   return {
     "@type": "ClothingStore",
     "@id": BUSINESS_ID,
@@ -168,7 +168,7 @@ export function productNode(dress: Dress) {
       url,
       priceCurrency: "INR",
       price: String(dress.price),
-      priceValidUntil: "2026-10-22",
+      priceValidUntil: "2027-12-31",
       availability: "https://schema.org/InStock",
       seller: { "@id": BUSINESS_ID },
     },
