@@ -227,3 +227,14 @@ export function relatedDresses(slug: string) {
   const rest = DRESSES.filter((dress) => dress.collection !== current.collection && dress.slug !== slug);
   return [...same, ...rest].slice(0, 3);
 }
+
+const BUILT_IN_COUNT = DRESSES.length;
+export const BUILT_IN_SLUGS: string[] = DRESSES.map((dress) => dress.slug);
+
+/** Outfits added from the admin panel. They are put into DRESSES, so every page sees them like the built-in ones. */
+export function setExtraDresses(extra: Dress[]) {
+  DRESSES.length = BUILT_IN_COUNT;
+  for (const dress of extra) {
+    if (!DRESSES.some((existing) => existing.slug === dress.slug)) DRESSES.push(dress);
+  }
+}
