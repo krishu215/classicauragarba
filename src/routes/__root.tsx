@@ -1,7 +1,10 @@
 import { createRootRoute, HeadContent, Outlet, Scripts } from "@tanstack/react-router";
 import { useEffect } from "react";
 import appCss from "../styles.css?url";
+import { setExtraDresses } from "@/lib/dresses";
+import { freshExtraDresses, primeExtraDresses } from "@/lib/extra-dresses";
 import { applyTheme, readMode } from "@/lib/theme";
+import { getExtraDresses } from "@/server/products";
 
 /** Re-applies the saved theme once the page is interactive, so a reload can never fall back to dark. */
 function ThemeSync() {
@@ -12,6 +15,22 @@ function ThemeSync() {
 }
 
 export const Route = createRootRoute({
+  // Outfits added from the admin panel are loaded before any page renders (on the server, and in the browser with a 60 second cache).
+  beforeLoad: async () => {
+    const cached = freshExtraDresses();
+    if (cached) {
+      setExtraDresses(cached);
+      return { extraDresses: cached };
+    }
+    try {
+      const list = await getExtraDresses();
+      primeExtraDresses(list);
+      setExtraDresses(list);
+      return { extraDresses: list };
+    } catch {
+      return { extraDresses: [] };
+    }
+  },
   head: () => ({
     meta: [
       { charSet: "utf-8" },
@@ -35,7 +54,15 @@ export const Route = createRootRoute({
       { rel: "stylesheet", href: appCss },
     ],
   }),
-  component: () => (
+  component: RootDocument,
+});
+
+function RootDocument() {
+  // Runs on the server and again when the browser hydrates, so both always agree on the outfit list.
+  const { extraDresses } = Route.useRouteContext();
+  setExtraDresses(extraDresses);
+  primeExtraDresses(extraDresses);
+  return (
     <html lang="en-IN" suppressHydrationWarning>
       <head>
         <HeadContent />
@@ -46,5 +73,5 @@ export const Route = createRootRoute({
         <Scripts />
       </body>
     </html>
-  ),
-});
+  );
+}
