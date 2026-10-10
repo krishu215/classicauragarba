@@ -1,13 +1,13 @@
-export const PHONE_DISPLAY = "+91 74770 87755";
-export const PHONE_TEL = "+917477087755";
-export const EMAIL = "hello@classicaura.in";
-export const INSTAGRAM = "@classicaura";
+export const PHONE_DISPLAY = "+91 92321 43198";
+export const PHONE_TEL = "+919232143198";
+export const EMAIL = "Krishnanamdev382@gmail.com";
+export const INSTAGRAM = "@tech_krishu";
 
 /** Online payment (Razorpay) is switched off for now: bookings are cash on delivery. Set to true to turn it back on. */
 export const ONLINE_PAYMENT = false;
 
 export function waLink(text?: string) {
-  const base = "https://wa.me/917477087755";
+  const base = "https://wa.me/919232143198";
   if (!text) return base;
   return `${base}?text=${encodeURIComponent(text)}`;
 }
