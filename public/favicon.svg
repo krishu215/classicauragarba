@@ -1,11 +1,22 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <rect width="32" height="32" rx="7" fill="#6d2436"/>
-  <g fill="#b08958">
-    <ellipse cx="16" cy="16" rx="3.4" ry="11"/>
-    <ellipse cx="16" cy="16" rx="3.4" ry="11" transform="rotate(45 16 16)"/>
-    <ellipse cx="16" cy="16" rx="3.4" ry="11" transform="rotate(90 16 16)"/>
-    <ellipse cx="16" cy="16" rx="3.4" ry="11" transform="rotate(135 16 16)"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <rect width="64" height="64" rx="12" fill="#211710"/>
+  <g fill="none" stroke="#F2E8D7" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Classic Aura's delicate floral mark -->
+    <path d="M32 39C23 33 21 24 32 14C43 24 41 33 32 39Z"/>
+    <path d="M31.8 38.5C22 39 14 33 13 25C22 24 29 29 31.8 38.5Z"/>
+    <path d="M32.2 38.5C42 39 50 33 51 25C42 24 35 29 32.2 38.5Z"/>
+    <path d="M32 39C24 43 18 43 12 39"/>
+    <path d="M32 39C40 43 46 43 52 39"/>
+    <path d="M32 39V48"/>
+    <path d="M24 48H40"/>
   </g>
-  <circle cx="16" cy="16" r="3.6" fill="#f6f0e6"/>
-  <circle cx="16" cy="16" r="1.6" fill="#1b110a"/>
+  <g fill="none" stroke="#C9A15B" stroke-width="2.1" stroke-linecap="round">
+    <path d="M12 19L20 29"/>
+    <path d="M52 19L44 29"/>
+  </g>
+  <g fill="#C9A15B">
+    <circle cx="11.5" cy="18.5" r="1.6"/>
+    <circle cx="52.5" cy="18.5" r="1.6"/>
+    <path d="M32 8l1.7 2.6L32 13l-1.7-2.4z"/>
+  </g>
 </svg>
