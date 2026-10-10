@@ -5,6 +5,7 @@ import { dayStatus, ONLINE_PAYMENT, quote } from "@/lib/site";
 import { background } from "./background.server";
 import { db, type BookingRow } from "./db.server";
 import { sendBookingEmails } from "./mail.server";
+import { loadExtraDresses } from "./products.server";
 import { createPaymentLink } from "./razorpay.server";
 
 /** An error whose message is safe to show to the customer. */
@@ -93,6 +94,7 @@ async function saveBooking(kind: "rental" | "trial", status: string, ref: string
 }
 
 export async function createRental(customer: Customer, lines: RentalLine[]) {
+  await loadExtraDresses();
   const problems = validateCustomer(customer);
   if (Object.keys(problems).length) throw new UserError("Please check your delivery details.");
   if (lines.length < 1 || lines.length > 6) throw new UserError("Choose between 1 and 6 outfits.");
@@ -145,6 +147,7 @@ export async function createRental(customer: Customer, lines: RentalLine[]) {
 }
 
 export async function createTrial(customer: Customer, slugs: string[]) {
+  await loadExtraDresses();
   const problems = validateCustomer(customer);
   if (Object.keys(problems).length) throw new UserError("Please check your details.");
   if (slugs.length < 1 || slugs.length > 3 || new Set(slugs).size !== slugs.length) throw new UserError("Choose 1 to 3 outfits.");
