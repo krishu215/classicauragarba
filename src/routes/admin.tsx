@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useCallback, useEffect, useMemo, useState, type FormEvent } from "react";
+import { ProductsPanel } from "@/components/admin-products";
 import { dressBySlug } from "@/lib/dresses";
 import { formatLong, inr } from "@/lib/site";
 import { seo } from "@/lib/seo";
@@ -80,6 +81,7 @@ function Dashboard({ email, onSignOut }: { email: string; onSignOut: () => void 
   const [error, setError] = useState("");
   const [filter, setFilter] = useState<BookingStatus | "all">("all");
   const [query, setQuery] = useState("");
+  const [tab, setTab] = useState<"bookings" | "products">("bookings");
 
   const load = useCallback(async () => {
     setError("");
@@ -154,6 +156,15 @@ function Dashboard({ email, onSignOut }: { email: string; onSignOut: () => void 
         </div>
       </div>
 
+      <div className="mt-6 flex gap-2" role="tablist">
+        <button role="tab" aria-selected={tab === "bookings"} className={"btn min-h-10 " + (tab === "bookings" ? "btn-solid" : "btn-line")} onClick={() => setTab("bookings")}>Bookings</button>
+        <button role="tab" aria-selected={tab === "products"} className={"btn min-h-10 " + (tab === "products" ? "btn-solid" : "btn-line")} onClick={() => setTab("products")}>Products</button>
+      </div>
+
+      {tab === "products" ? (
+        <ProductsPanel />
+      ) : (
+        <>
       <dl className="mt-6 grid grid-cols-2 gap-3 md:grid-cols-4">
         <Stat k="Confirmed value" v={inr(stats.revenue)} />
         <Stat k="Paid, to confirm" v={String(stats.toConfirm)} />
@@ -184,6 +195,8 @@ function Dashboard({ email, onSignOut }: { email: string; onSignOut: () => void 
           <BookingCard key={row.id} row={row} onSaved={load} />
         ))}
       </ul>
+        </>
+      )}
     </main>
   );
 }
