@@ -12,5 +12,5 @@ export function optionalEnv(name: string): string | undefined {
 
 /** Public site URL without a trailing slash. Used for payment return links and emails. */
 export function siteUrl(): string {
-  return (optionalEnv("SITE_URL") ?? "https://classicauragarba.netlify.app").replace(/\/+$/, "");
+  return (optionalEnv("SITE_URL") ?? "https://classicauragarba.vercel.app").replace(/\/+$/, "");
 }
