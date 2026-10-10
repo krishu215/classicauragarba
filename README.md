@@ -46,4 +46,4 @@ only blocks a dress for dates that already have a paid booking.
 
 Set in `vite.config.ts` (`securityHeaders`): CSP, X-Frame-Options, X-Content-Type-Options, Referrer-Policy,
 Permissions-Policy, HSTS and COOP. If you add a new third-party script, font or image host, add it to the CSP there.
-After deploying, check with `curl -I https://classicauragarba.netlify.app/`.
+After deploying, check with `curl -I https://classicauragarba.vercel.app/`.
